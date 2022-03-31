@@ -10,11 +10,13 @@ import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactory;
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactorySettings;
 import com.servicebus.jms.consumer.D_FilteredTopicConsumer;
 import com.servicebus.jms.consumer.E_ScheduledMessageQueueConsumer;
+import com.servicebus.jms.consumer.F_LargeMessageQueueConsumer;
 import com.servicebus.jms.consumer.A_QueueConsumer;
 import com.servicebus.jms.consumer.B_SharedDurableTopicConsumer;
 import com.servicebus.jms.consumer.C_TemporaryQueueConsumer;
 import com.servicebus.jms.producer.D_FilteredTopicProducer;
 import com.servicebus.jms.producer.E_ScheduledMessageQueueProducer;
+import com.servicebus.jms.producer.F_LargeMessageQueueProducer;
 import com.servicebus.jms.producer.A_QueueProducer;
 import com.servicebus.jms.producer.C_TemporaryQueueProducer;
 import com.servicebus.jms.producer.B_TopicProducer;
@@ -77,6 +79,13 @@ public class Demo {
 
 			E_ScheduledMessageQueueConsumer scheduledMessageQueueConsumer = new E_ScheduledMessageQueueConsumer(scheduledMessageQueueProducer.GetQueue(), connectionFactory);
 			scheduledMessageQueueConsumer.run();
+			
+			Log.Section("Queue with large message");
+			F_LargeMessageQueueProducer largeMessageQueueProducer = new F_LargeMessageQueueProducer(connectionFactory);
+			largeMessageQueueProducer.run();
+
+			F_LargeMessageQueueConsumer largeMessageQueueConsumer = new F_LargeMessageQueueConsumer(largeMessageQueueProducer.GetQueue(), connectionFactory);
+			largeMessageQueueConsumer.run();
 
 			return true;
 		} finally {

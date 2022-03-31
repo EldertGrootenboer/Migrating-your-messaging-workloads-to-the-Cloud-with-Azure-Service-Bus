@@ -24,7 +24,7 @@ public class C_TemporaryQueueProducer implements Runnable {
 			
 			Queue temporaryQueue = jmsContext.createTemporaryQueue();
 			
-			queue = jmsContext.createQueue("requestResponseQueue");
+			queue = jmsContext.createQueue("C_RequestResponseQueue");
 						
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			jmsProducer.setJMSReplyTo(temporaryQueue);

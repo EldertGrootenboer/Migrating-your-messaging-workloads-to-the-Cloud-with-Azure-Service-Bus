@@ -348,7 +348,11 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Configuration files
+**/config.properties
+
+# Large assets
 ActiveMQ/apache-activemq-5.17.0-bin.zip
 ActiveMQ/jdk-18_windows-x64_bin.exe
-assets/code/JMS2.0-Demo/src/main/java/config.properties
-assets/code/JMS2.0-Demo/target/classes/config.properties
+assets/code/JMS2.0-Demo/large_file_jms.dat

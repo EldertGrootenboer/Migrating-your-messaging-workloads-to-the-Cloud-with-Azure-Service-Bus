@@ -19,18 +19,20 @@ public class B_SharedDurableTopicConsumer implements Runnable {
 
 	public void run() {
 		JMSContext jmsContext = null;
+		String consumer1Name = "B_SharedDurableConsumer1";
+		String consumer2Name = "B_SharedDurableConsumer2";
 
 		try {
 			jmsContext = connectionFactory.createContext();
-			JMSConsumer jmsConsumer1 = jmsContext.createSharedDurableConsumer(topic, "SharedDurableConsumer1");
-			JMSConsumer jmsConsumer2 = jmsContext.createSharedDurableConsumer(topic, "SharedDurableConsumer2");
+			JMSConsumer jmsConsumer1 = jmsContext.createSharedDurableConsumer(topic, consumer1Name);
+			JMSConsumer jmsConsumer2 = jmsContext.createSharedDurableConsumer(topic, consumer2Name);
 
 			Message message = jmsConsumer1.receive(2000);
-			Log.ReceivedMessage("SharedDurableConsumer1", message);
+			Log.ReceivedMessage(consumer1Name, message);
 			message.acknowledge();
 
 			message = jmsConsumer2.receive(2000);
-			Log.ReceivedMessage("SharedDurableConsumer2", message);
+			Log.ReceivedMessage(consumer2Name, message);
 			message.acknowledge();
 		} catch (Exception excep) {
 			excep.printStackTrace();

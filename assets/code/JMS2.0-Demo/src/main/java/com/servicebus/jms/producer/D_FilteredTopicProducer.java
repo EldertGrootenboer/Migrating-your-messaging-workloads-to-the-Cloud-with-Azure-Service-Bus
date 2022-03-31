@@ -22,7 +22,7 @@ public class D_FilteredTopicProducer implements Runnable {
 		try {
 			jmsContext = connectionFactory.createContext();
 			
-			topic = jmsContext.createTopic("jmsDemoFilteredTopic");
+			topic = jmsContext.createTopic("D_DemoFilteredTopic");
 						
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			

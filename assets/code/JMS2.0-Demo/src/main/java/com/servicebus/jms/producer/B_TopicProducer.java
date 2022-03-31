@@ -21,7 +21,7 @@ public class B_TopicProducer implements Runnable {
 		try {
 			jmsContext = connectionFactory.createContext();
 			
-			topic = jmsContext.createTopic("jmsDemoTopic");
+			topic = jmsContext.createTopic("B_DemoTopic");
 						
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			

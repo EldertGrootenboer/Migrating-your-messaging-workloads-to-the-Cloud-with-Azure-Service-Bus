@@ -22,7 +22,7 @@ public class E_ScheduledMessageQueueProducer implements Runnable {
 		try {
 			jmsContext = connectionFactory.createContext();
 			
-			queue = jmsContext.createQueue("jmsScheduledMessageDemoQueue");
+			queue = jmsContext.createQueue("E_ScheduledMessageDemoQueue");
 			
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			jmsProducer.setDeliveryDelay(10000);

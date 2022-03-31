@@ -21,7 +21,7 @@ public class A_QueueProducer implements Runnable {
 		try {
 			jmsContext = connectionFactory.createContext();
 			
-			queue = jmsContext.createQueue("jmsDemoQueue");
+			queue = jmsContext.createQueue("A_DemoQueue");
 			
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			

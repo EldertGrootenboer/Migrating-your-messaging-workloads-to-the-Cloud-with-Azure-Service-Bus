@@ -19,18 +19,20 @@ public class D_FilteredTopicConsumer implements Runnable {
 
 	public void run() {
 		JMSContext jmsContext = null;
+		String consumer1Name = "D_SharedDurableFilteredConsumer1";
+		String consumer2Name = "D_SharedDurableFilteredConsumer2";
 
 		try {
 			jmsContext = connectionFactory.createContext();
-			JMSConsumer jmsConsumer1 = jmsContext.createSharedDurableConsumer(topic, "SharedDurableFilteredConsumer1", "Region = 'NorthAmerica'");			
-			JMSConsumer jmsConsumer2 = jmsContext.createSharedDurableConsumer(topic, "SharedDurableFilteredConsumer2", "Region = 'Europe'");
+			JMSConsumer jmsConsumer1 = jmsContext.createSharedDurableConsumer(topic, consumer1Name, "Region = 'NorthAmerica'");			
+			JMSConsumer jmsConsumer2 = jmsContext.createSharedDurableConsumer(topic, consumer2Name, "Region = 'Europe'");
 
 			Message message = jmsConsumer1.receive(2000);
-			Log.ReceivedMessage("SharedDurableFilteredConsumer1", message);
+			Log.ReceivedMessage(consumer1Name, message);
 			message.acknowledge();
 
 			message = jmsConsumer2.receive(2000);
-			Log.ReceivedMessage("SharedDurableFilteredConsumer2", message);
+			Log.ReceivedMessage(consumer2Name, message);
 			message.acknowledge();
 		} catch (Exception excep) {
 			excep.printStackTrace();
