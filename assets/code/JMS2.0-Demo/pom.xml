@@ -1,0 +1,19 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.servicebus.jms</groupId>
+	<artifactId>JMS2.0-Demo</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>JMS2.0 Demo</name>
+	<dependencies>
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>azure-servicebus-jms</artifactId>
+			<version>0.0.9</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-jms-client-all</artifactId>
+			<version>2.20.0</version>
+		</dependency>
+	</dependencies>
+</project>
