@@ -25,11 +25,12 @@ public class F_LargeMessageQueueProducer implements Runnable {
 
 	public void run() {
 		JMSContext jmsContext = null;
+		int largeMessageSizeMB = 10;
 
 		try {
 			Log.Step("Creating large file");
 			File inputFile = new File("large_file_jms.dat");
-			createFile(inputFile, 524288000);
+			createFile(inputFile, largeMessageSizeMB * 1024 * 1024);
 			Log.Step("File created");
 
 			jmsContext = connectionFactory.createContext();
@@ -39,7 +40,8 @@ public class F_LargeMessageQueueProducer implements Runnable {
 			BytesMessage message = jmsContext.createBytesMessage();
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInput = new BufferedInputStream(fileInputStream);
-			message.setObjectProperty("JMS_AMQ_InputStream", bufferedInput);
+			message.writeBytes(bufferedInput.readAllBytes());
+			bufferedInput.close();
 
 			JMSProducer jmsProducer = jmsContext.createProducer();
 			Log.Step("Sending large message");

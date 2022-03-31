@@ -24,6 +24,7 @@ public class F_LargeMessageQueueConsumer implements Runnable {
 			jmsContext = connectionFactory.createContext();
 			JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
+			Log.Step("Receiving large message");
 			BytesMessage message = (BytesMessage) jmsConsumer.receive();
 			Log.ReceivedMessage(((Queue)destination).getQueueName(), message);
 			message.acknowledge();

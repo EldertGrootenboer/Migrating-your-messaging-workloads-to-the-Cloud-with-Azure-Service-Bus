@@ -34,13 +34,13 @@ public class Demo {
 			properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
 			
 			// ActiveMQ
-			ActiveMQJMSConnectionFactory connectionFactory = new ActiveMQJMSConnectionFactory("tcp://localhost:61616");
+//			ActiveMQJMSConnectionFactory connectionFactory = new ActiveMQJMSConnectionFactory("tcp://localhost:61616");
 			
 			// Service Bus
-//			String ServiceBusConnectionString = properties.getProperty("sb.connectionstring");
-//			ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();
-//			connFactorySettings.setConnectionIdleTimeoutMS(20000);
-//			ServiceBusJmsConnectionFactory connectionFactory = new ServiceBusJmsConnectionFactory(ServiceBusConnectionString, connFactorySettings);
+			String ServiceBusConnectionString = properties.getProperty("sb.connectionstring");
+			ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();
+			connFactorySettings.setConnectionIdleTimeoutMS(20000);
+			ServiceBusJmsConnectionFactory connectionFactory = new ServiceBusJmsConnectionFactory(ServiceBusConnectionString, connFactorySettings);
 			
 			Log.Section("Simple queue");
 			A_QueueProducer queueProducer = new A_QueueProducer(connectionFactory);
@@ -48,6 +48,8 @@ public class Demo {
 
 			A_QueueConsumer queueConsumer = new A_QueueConsumer(queueProducer.GetQueue(), connectionFactory);
 			queueConsumer.run();
+			
+			
 
 			Log.Section("Simple topic with 2 subscribers");
 			B_TopicProducer topicProducer = new B_TopicProducer(connectionFactory);
@@ -55,16 +57,20 @@ public class Demo {
 
 			B_SharedDurableTopicConsumer sharedDurableTopicConsumer = new B_SharedDurableTopicConsumer(topicProducer.GetTopic(), connectionFactory);
 			sharedDurableTopicConsumer.run();
+			
+			
 
 			Log.Section("Request-response with temporary queue");
 			C_TemporaryQueueProducer temporaryQeueProducer = new C_TemporaryQueueProducer(connectionFactory);
 			Thread temporaryQeueProducerThread = new Thread(temporaryQeueProducer);
 			temporaryQeueProducerThread.start();
 
-			Thread.sleep(500);
+			Thread.sleep(2000);
 
 			C_TemporaryQueueConsumer temporaryQueueConsumer = new C_TemporaryQueueConsumer(temporaryQeueProducer.GetQueue(), connectionFactory);
 			temporaryQueueConsumer.run();
+			
+			
 
 			Log.Section("Topic with 2 filtered subscribers");
 			D_FilteredTopicProducer filteredTopicProducer = new D_FilteredTopicProducer(connectionFactory);
@@ -73,12 +79,16 @@ public class Demo {
 			D_FilteredTopicConsumer filteredTopicConsumer = new D_FilteredTopicConsumer(filteredTopicProducer.GetTopic(), connectionFactory);
 			filteredTopicConsumer.run();
 			
+			
+			
 			Log.Section("Queue with scheduled message");
 			E_ScheduledMessageQueueProducer scheduledMessageQueueProducer = new E_ScheduledMessageQueueProducer(connectionFactory);
 			scheduledMessageQueueProducer.run();
 
 			E_ScheduledMessageQueueConsumer scheduledMessageQueueConsumer = new E_ScheduledMessageQueueConsumer(scheduledMessageQueueProducer.GetQueue(), connectionFactory);
 			scheduledMessageQueueConsumer.run();
+			
+			
 			
 			Log.Section("Queue with large message");
 			F_LargeMessageQueueProducer largeMessageQueueProducer = new F_LargeMessageQueueProducer(connectionFactory);
