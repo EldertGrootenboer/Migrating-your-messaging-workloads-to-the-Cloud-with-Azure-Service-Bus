@@ -1,18 +1,18 @@
 package com.servicebus.jms.producer;
 
 import javax.jms.ConnectionFactory;
-import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.Queue;
+
 import com.servicebus.jms.utils.Log;
 
-public class TemporaryQueueProducer implements Runnable {
+public class E_ScheduledMessageQueueProducer implements Runnable {
 	private ConnectionFactory connectionFactory;
 	private Queue queue;
 
-	public TemporaryQueueProducer(ConnectionFactory connectionFactory) {
+	public E_ScheduledMessageQueueProducer(ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 	}
 
@@ -22,21 +22,14 @@ public class TemporaryQueueProducer implements Runnable {
 		try {
 			jmsContext = connectionFactory.createContext();
 			
-			Queue temporaryQueue = jmsContext.createTemporaryQueue();
+			queue = jmsContext.createQueue("jmsScheduledMessageDemoQueue");
 			
-			queue = jmsContext.createQueue("requestResponseQueue");
-						
 			JMSProducer jmsProducer = jmsContext.createProducer();
-			jmsProducer.setJMSReplyTo(temporaryQueue);
-			
-			String message = "Hello World!";
+			jmsProducer.setDeliveryDelay(10000);
+
+			Message message = jmsContext.createTextMessage("Hello world!");
 			jmsProducer.send(queue, message);
 			Log.SentMessage(queue.getQueueName(), message);
-			
-			JMSConsumer responseConsumer = jmsContext.createConsumer(temporaryQueue);
-			Message response = responseConsumer.receive();
-			Log.ReceivedMessage(temporaryQueue.getQueueName(), response);
-			response.acknowledge();
 		} catch (Exception excep) {
 			excep.printStackTrace();
 		} finally {

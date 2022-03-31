@@ -7,11 +7,11 @@ import javax.jms.Topic;
 
 import com.servicebus.jms.utils.Log;
 
-public class TopicProducer implements Runnable {
+public class B_TopicProducer implements Runnable {
 	private ConnectionFactory connectionFactory;
 	private Topic topic;
 
-	public TopicProducer(ConnectionFactory connectionFactory) {
+	public B_TopicProducer(ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 	}
 

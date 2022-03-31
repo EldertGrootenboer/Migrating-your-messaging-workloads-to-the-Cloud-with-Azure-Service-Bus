@@ -8,11 +8,11 @@ import javax.jms.Topic;
 
 import com.servicebus.jms.utils.Log;
 
-public class SharedDurableTopicConsumer implements Runnable {
+public class B_SharedDurableTopicConsumer implements Runnable {
 	private Topic topic;
 	private ConnectionFactory connectionFactory;
 
-	public SharedDurableTopicConsumer(Topic topic, ConnectionFactory connectionFactory) {
+	public B_SharedDurableTopicConsumer(Topic topic, ConnectionFactory connectionFactory) {
 		this.topic = topic;
 		this.connectionFactory = connectionFactory;
 	}

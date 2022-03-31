@@ -8,14 +8,16 @@ import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactory;
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactorySettings;
-import com.servicebus.jms.consumer.FilteredTopicConsumer;
-import com.servicebus.jms.consumer.QueueConsumer;
-import com.servicebus.jms.consumer.SharedDurableTopicConsumer;
-import com.servicebus.jms.consumer.TemporaryQueueConsumer;
-import com.servicebus.jms.producer.FilteredTopicProducer;
-import com.servicebus.jms.producer.QueueProducer;
-import com.servicebus.jms.producer.TemporaryQueueProducer;
-import com.servicebus.jms.producer.TopicProducer;
+import com.servicebus.jms.consumer.D_FilteredTopicConsumer;
+import com.servicebus.jms.consumer.E_ScheduledMessageQueueConsumer;
+import com.servicebus.jms.consumer.A_QueueConsumer;
+import com.servicebus.jms.consumer.B_SharedDurableTopicConsumer;
+import com.servicebus.jms.consumer.C_TemporaryQueueConsumer;
+import com.servicebus.jms.producer.D_FilteredTopicProducer;
+import com.servicebus.jms.producer.E_ScheduledMessageQueueProducer;
+import com.servicebus.jms.producer.A_QueueProducer;
+import com.servicebus.jms.producer.C_TemporaryQueueProducer;
+import com.servicebus.jms.producer.B_TopicProducer;
 import com.servicebus.jms.utils.Log;
 
 public class Demo {
@@ -39,35 +41,42 @@ public class Demo {
 //			ServiceBusJmsConnectionFactory connectionFactory = new ServiceBusJmsConnectionFactory(ServiceBusConnectionString, connFactorySettings);
 			
 			Log.Section("Simple queue");
-			QueueProducer queueProducer = new QueueProducer(connectionFactory);
+			A_QueueProducer queueProducer = new A_QueueProducer(connectionFactory);
 			queueProducer.run();
 
-			QueueConsumer queueConsumer = new QueueConsumer(queueProducer.GetQueue(), connectionFactory);
+			A_QueueConsumer queueConsumer = new A_QueueConsumer(queueProducer.GetQueue(), connectionFactory);
 			queueConsumer.run();
 
 			Log.Section("Simple topic with 2 subscribers");
-			TopicProducer topicProducer = new TopicProducer(connectionFactory);
+			B_TopicProducer topicProducer = new B_TopicProducer(connectionFactory);
 			topicProducer.run();
 
-			SharedDurableTopicConsumer sharedDurableTopicConsumer = new SharedDurableTopicConsumer(topicProducer.GetTopic(), connectionFactory);
+			B_SharedDurableTopicConsumer sharedDurableTopicConsumer = new B_SharedDurableTopicConsumer(topicProducer.GetTopic(), connectionFactory);
 			sharedDurableTopicConsumer.run();
 
 			Log.Section("Request-response with temporary queue");
-			TemporaryQueueProducer temporaryQeueProducer = new TemporaryQueueProducer(connectionFactory);
+			C_TemporaryQueueProducer temporaryQeueProducer = new C_TemporaryQueueProducer(connectionFactory);
 			Thread temporaryQeueProducerThread = new Thread(temporaryQeueProducer);
 			temporaryQeueProducerThread.start();
-			
-			Thread.sleep(2000);
 
-			TemporaryQueueConsumer temporaryQueueConsumer = new TemporaryQueueConsumer(temporaryQeueProducer.GetQueue(), connectionFactory);
+			Thread.sleep(500);
+
+			C_TemporaryQueueConsumer temporaryQueueConsumer = new C_TemporaryQueueConsumer(temporaryQeueProducer.GetQueue(), connectionFactory);
 			temporaryQueueConsumer.run();
 
 			Log.Section("Topic with 2 filtered subscribers");
-			FilteredTopicProducer filteredTopicProducer = new FilteredTopicProducer(connectionFactory);
+			D_FilteredTopicProducer filteredTopicProducer = new D_FilteredTopicProducer(connectionFactory);
 			filteredTopicProducer.run();
 
-			FilteredTopicConsumer filteredTopicConsumer = new FilteredTopicConsumer(filteredTopicProducer.GetTopic(), connectionFactory);
+			D_FilteredTopicConsumer filteredTopicConsumer = new D_FilteredTopicConsumer(filteredTopicProducer.GetTopic(), connectionFactory);
 			filteredTopicConsumer.run();
+			
+			Log.Section("Queue with scheduled message");
+			E_ScheduledMessageQueueProducer scheduledMessageQueueProducer = new E_ScheduledMessageQueueProducer(connectionFactory);
+			scheduledMessageQueueProducer.run();
+
+			E_ScheduledMessageQueueConsumer scheduledMessageQueueConsumer = new E_ScheduledMessageQueueConsumer(scheduledMessageQueueProducer.GetQueue(), connectionFactory);
+			scheduledMessageQueueConsumer.run();
 
 			return true;
 		} finally {

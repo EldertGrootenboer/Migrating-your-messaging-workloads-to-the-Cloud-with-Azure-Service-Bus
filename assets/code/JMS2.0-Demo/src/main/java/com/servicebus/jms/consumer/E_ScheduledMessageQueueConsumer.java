@@ -8,11 +8,11 @@ import javax.jms.Message;
 import javax.jms.Queue;
 import com.servicebus.jms.utils.Log;
 
-public class QueueConsumer implements Runnable {
+public class E_ScheduledMessageQueueConsumer implements Runnable {
 	private Destination destination;
 	private ConnectionFactory connectionFactory;
 
-	public QueueConsumer(Destination destination, ConnectionFactory connectionFactory) {
+	public E_ScheduledMessageQueueConsumer(Destination destination, ConnectionFactory connectionFactory) {
 		this.destination = destination;
 		this.connectionFactory = connectionFactory;
 	}
@@ -24,6 +24,7 @@ public class QueueConsumer implements Runnable {
 			jmsContext = connectionFactory.createContext();
 			JMSConsumer jmsConsumer = jmsContext.createConsumer(destination);
 
+			Log.Step("Waiting for scheduled message");
 			Message message = jmsConsumer.receive();
 			Log.ReceivedMessage(((Queue)destination).getQueueName(), message);
 			message.acknowledge();

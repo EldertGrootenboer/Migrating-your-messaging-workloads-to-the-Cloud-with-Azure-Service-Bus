@@ -29,6 +29,10 @@ public class Log {
 		System.out.println("");
 		System.out.println("");
 		System.out.println("");
-		System.out.println("--------------" + section + "--------------");
+		System.out.println("-------------- " + section + " --------------");
+	}
+
+	public static void Step(String step) {
+		System.out.println("-------------- " + step + " --------------");
 	}
 }

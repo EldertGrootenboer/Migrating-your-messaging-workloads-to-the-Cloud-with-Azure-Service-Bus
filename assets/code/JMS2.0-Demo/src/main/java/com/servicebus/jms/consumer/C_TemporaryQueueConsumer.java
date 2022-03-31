@@ -10,11 +10,11 @@ import javax.jms.Queue;
 
 import com.servicebus.jms.utils.Log;
 
-public class TemporaryQueueConsumer implements Runnable {
+public class C_TemporaryQueueConsumer implements Runnable {
 	private Destination destination;
 	private ConnectionFactory connectionFactory;
 
-	public TemporaryQueueConsumer(Destination destination, ConnectionFactory connectionFactory) {
+	public C_TemporaryQueueConsumer(Destination destination, ConnectionFactory connectionFactory) {
 		this.destination = destination;
 		this.connectionFactory = connectionFactory;
 	}

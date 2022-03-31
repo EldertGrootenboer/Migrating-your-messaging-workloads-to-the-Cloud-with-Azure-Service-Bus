@@ -3,16 +3,15 @@ package com.servicebus.jms.producer;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
-import javax.jms.Message;
 import javax.jms.Queue;
 
 import com.servicebus.jms.utils.Log;
 
-public class ScheduledMessageQueueProducer implements Runnable {
+public class A_QueueProducer implements Runnable {
 	private ConnectionFactory connectionFactory;
 	private Queue queue;
 
-	public ScheduledMessageQueueProducer(ConnectionFactory connectionFactory) {
+	public A_QueueProducer(ConnectionFactory connectionFactory) {
 		this.connectionFactory = connectionFactory;
 	}
 
@@ -22,12 +21,11 @@ public class ScheduledMessageQueueProducer implements Runnable {
 		try {
 			jmsContext = connectionFactory.createContext();
 			
-			queue = jmsContext.createQueue("jmsScheduledMessageDemoQueue");
+			queue = jmsContext.createQueue("jmsDemoQueue");
 			
 			JMSProducer jmsProducer = jmsContext.createProducer();
-
-			Message message = jmsContext.createTextMessage("Hello world!");
-			message.setJMSDeliveryTime(10000);
+			
+			String message = "Hello World!";
 			jmsProducer.send(queue, message);
 			Log.SentMessage(queue.getQueueName(), message);
 		} catch (Exception excep) {
