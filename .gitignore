@@ -356,3 +356,4 @@ MigrationBackup/
 */apache-activemq-5.17.0-bin.zip
 */jdk-18_windows-x64_bin.exe
 assets/code/demo-2/large_file_jms.dat
+*/target/*
