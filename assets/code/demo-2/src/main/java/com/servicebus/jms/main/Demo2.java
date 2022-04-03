@@ -22,9 +22,9 @@ import com.servicebus.jms.producer.C_TemporaryQueueProducer;
 import com.servicebus.jms.producer.B_TopicProducer;
 import com.servicebus.jms.utils.Log;
 
-public class Demo {
+public class Demo2 {
 	public static void main(final String[] args) throws Exception {
-		new Demo().runExample();
+		new Demo2().runExample();
 	}
 
 	public boolean runExample() throws Exception {
@@ -32,15 +32,15 @@ public class Demo {
 		try {
 			Properties properties = new Properties();
 			properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
+			String connectionString = properties.getProperty("jms.connectionstring");
 			
 			// ActiveMQ
-//			ActiveMQJMSConnectionFactory connectionFactory = new ActiveMQJMSConnectionFactory("tcp://localhost:61616");
+			ActiveMQJMSConnectionFactory connectionFactory = new ActiveMQJMSConnectionFactory(connectionString);
 			
 			// Service Bus
-			String ServiceBusConnectionString = properties.getProperty("sb.connectionstring");
-			ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();
-			connFactorySettings.setConnectionIdleTimeoutMS(20000);
-			ServiceBusJmsConnectionFactory connectionFactory = new ServiceBusJmsConnectionFactory(ServiceBusConnectionString, connFactorySettings);
+//			ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();
+//			connFactorySettings.setConnectionIdleTimeoutMS(20000);
+//			ServiceBusJmsConnectionFactory connectionFactory = new ServiceBusJmsConnectionFactory(connectionString, connFactorySettings);
 			
 			Log.Section("Simple queue");
 			A_QueueProducer queueProducer = new A_QueueProducer(connectionFactory);
