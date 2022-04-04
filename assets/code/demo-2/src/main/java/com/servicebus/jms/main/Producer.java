@@ -23,8 +23,6 @@ import com.servicebus.jms.utils.JmsTopic;
 import com.servicebus.jms.utils.Log;
 
 
-import javax.jms.ConnectionFactory;
-
 public class Producer {
 	public static void main(final String[] args) throws Exception {
 		new Producer().runProducer();
