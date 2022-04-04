@@ -5,7 +5,6 @@ import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.Topic;
 import com.servicebus.jms.utils.JmsConnectionFactory;
-import com.servicebus.jms.utils.JmsTopic;
 import com.servicebus.jms.utils.Log;
 import com.servicebus.jms.utils.JmsMessageListener;
 import com.servicebus.jms.utils.JmsMessageListenerWithResponse;
@@ -29,7 +28,7 @@ public class Consumer {
 		try {
 			ConnectionFactory connectionFactory = JmsConnectionFactory.Get();
 			jmsContext = connectionFactory.createContext();
-			Topic topic = JmsTopic.Get(connectionFactory, topicName);
+			Topic topic = jmsContext.createTopic(topicName);
 
 			Log.Section("Receive messages from subscriptions");
 			JMSConsumer jmsProcurementConsumer = jmsContext.createSharedDurableConsumer(topic, procurementConsumerName);

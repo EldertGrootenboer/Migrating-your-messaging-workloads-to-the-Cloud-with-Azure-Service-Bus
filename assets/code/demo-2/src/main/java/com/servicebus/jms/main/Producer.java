@@ -16,10 +16,9 @@ import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
-import com.servicebus.jms.utils.JmsConnectionFactory;
-import com.servicebus.jms.utils.JmsTopic;
-import com.servicebus.jms.utils.Log;
 
+import com.servicebus.jms.utils.JmsConnectionFactory;
+import com.servicebus.jms.utils.Log;
 
 public class Producer {
 	public static void main(final String[] args) throws Exception {
@@ -32,48 +31,51 @@ public class Producer {
 		long deliveryDelayInSeconds = 10;
 		int largeMessageSizeMB = 10;
 		JMSContext jmsContext = null;
+		JMSProducer jmsProducer = null;
+		Message message = null;
 
 		try {
 			ConnectionFactory connectionFactory = JmsConnectionFactory.Get();
 			jmsContext = connectionFactory.createContext();
-			Topic topic = JmsTopic.Get(connectionFactory, topicName);
-			Message message = null;
-			JMSProducer jmsProducer = jmsContext.createProducer();
+			Topic topic = jmsContext.createTopic(topicName);
+			jmsProducer = jmsContext.createProducer();
 			
 			
 
-			Log.Section("Send general message to topic");			
-			message = jmsContext.createTextMessage(String.format("Hello %s!", conference));		
+			Log.Section("Send general message to topic");
+			message = jmsContext.createTextMessage(String.format("Hello %s!", conference));
 			jmsProducer.send(topic, message);
 			Log.SentMessage(topic.getTopicName(), message);
 			
-
+			
 
 			Log.Section("Send messages for warehouses");
 			message = jmsContext.createTextMessage("Order to be delivered by NA warehouse");
-			message.setStringProperty("Region", "NorthAmerica");		
+			message.setStringProperty("Region", "NorthAmerica");
 			jmsProducer.send(topic, message);
 			Log.SentMessage(topic.getTopicName(), message);
-			
+
 			message = jmsContext.createTextMessage("Order to be delivered by EU warehouse");
 			message.setStringProperty("Region", "NorthAmerica");
 			jmsProducer.send(topic, message);
 			Log.SentMessage(topic.getTopicName(), message);
 			
-
+			
 
 			Log.Section("Send delayed message for NA warehouse");
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 			String timestamp = formatter.format(new Date());
-			
+
 			jmsProducer.setDeliveryDelay(deliveryDelayInSeconds * 1000);
-			message = jmsContext.createTextMessage(String.format("Order to be delivered by NA warehouse, sent at %s, to be handled in %d seconds", timestamp, deliveryDelayInSeconds));
-			message.setStringProperty("Region", "NorthAmerica");		
+			message = jmsContext.createTextMessage(
+					String.format("Order to be delivered by NA warehouse, sent at %s, to be handled in %d seconds",
+							timestamp, deliveryDelayInSeconds));
+			message.setStringProperty("Region", "NorthAmerica");
 			jmsProducer.send(topic, message);
 			Log.SentMessage(topic.getTopicName(), message);
 			
 			
-			
+
 			Log.Section("Send message and wait for response");
 			Queue temporaryQueue = jmsContext.createTemporaryQueue();
 			message = jmsContext.createTextMessage("Please acknowledge receipt of this message.");
@@ -90,13 +92,13 @@ public class Producer {
 			response.acknowledge();
 			
 			
-			
+
 			Log.Section("Send large message to topic");
 			Log.Step("Creating large file");
 			File inputFile = new File("large_file_jms.dat");
 			createFile(inputFile, largeMessageSizeMB * 1024 * 1024);
 			Log.Step("File created");
-			
+
 			BytesMessage byteMessage = jmsContext.createBytesMessage();
 			FileInputStream fileInputStream = new FileInputStream(inputFile);
 			BufferedInputStream bufferedInput = new BufferedInputStream(fileInputStream);
@@ -108,7 +110,7 @@ public class Producer {
 			Log.Step("Sending large message");
 			jmsProducer.send(topic, byteMessage);
 			Log.SentMessage(topic.getTopicName(), byteMessage);
-			
+
 		} catch (Exception excep) {
 			excep.printStackTrace();
 		} finally {
