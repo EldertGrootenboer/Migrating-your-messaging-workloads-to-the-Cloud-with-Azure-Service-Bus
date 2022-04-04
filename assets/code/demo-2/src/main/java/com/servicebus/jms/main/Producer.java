@@ -8,17 +8,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
-
 import javax.jms.BytesMessage;
+import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
-import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
-
+import com.servicebus.jms.utils.JmsConnectionFactory;
 import com.servicebus.jms.utils.JmsTopic;
 import com.servicebus.jms.utils.Log;
 
@@ -34,19 +32,9 @@ public class Producer {
 		long deliveryDelayInSeconds = 10;
 		int largeMessageSizeMB = 10;
 		JMSContext jmsContext = null;
-		Properties properties = new Properties();
-		properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
-		String connectionString = properties.getProperty("jms.connectionstring");
-
-		// ActiveMQ
-		ActiveMQJMSConnectionFactory connectionFactory = new ActiveMQJMSConnectionFactory(connectionString);
-
-		// Service Bus
-//			ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();
-//			connFactorySettings.setConnectionIdleTimeoutMS(20000);
-//			ServiceBusJmsConnectionFactory connectionFactory = new ServiceBusJmsConnectionFactory(connectionString, connFactorySettings);
 
 		try {
+			ConnectionFactory connectionFactory = JmsConnectionFactory.Get();
 			jmsContext = connectionFactory.createContext();
 			Topic topic = JmsTopic.Get(connectionFactory, topicName);
 			Message message = null;
