@@ -1,13 +1,8 @@
 package com.servicebus.jms.main;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.servicebus.jms.utils.JmsConnectionFactory;
+import com.servicebus.jms.utils.Log;
+
 import javax.jms.BytesMessage;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSConsumer;
@@ -16,53 +11,53 @@ import javax.jms.JMSProducer;
 import javax.jms.Message;
 import javax.jms.Queue;
 import javax.jms.Topic;
-
-import com.servicebus.jms.utils.JmsConnectionFactory;
-import com.servicebus.jms.utils.Log;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Producer {
-	public static void main(final String[] args) throws Exception {
+	public static void main(final String[] args) {
 		new Producer().runProducer();
 	}
 
-	public void runProducer() throws Exception {
+	public void runProducer() {
 		String conference = "NDC Porto";
 		String topicName = "OrderTopic";
 		long deliveryDelayInSeconds = 10;
 		int largeMessageSizeMB = 10;
 		JMSContext jmsContext = null;
-		JMSProducer jmsProducer = null;
-		Message message = null;
+		JMSProducer jmsProducer;
+		Message message;
 
 		try {
 			ConnectionFactory connectionFactory = JmsConnectionFactory.Get();
 			jmsContext = connectionFactory.createContext();
 			Topic topic = jmsContext.createTopic(topicName);
 			jmsProducer = jmsContext.createProducer();
-			
-			
 
-			Log.Section("Send general message to topic");
+			Log.section("Send general message to topic");
 			message = jmsContext.createTextMessage(String.format("Hello %s!", conference));
 			jmsProducer.send(topic, message);
-			Log.SentMessage(topic.getTopicName(), message);
-			
-			
+			Log.sentMessage(topic.getTopicName(), message);
 
-			Log.Section("Send messages for warehouses");
+			Log.section("Send messages for warehouses");
 			message = jmsContext.createTextMessage("Order to be delivered by NA warehouse");
 			message.setStringProperty("Region", "NorthAmerica");
 			jmsProducer.send(topic, message);
-			Log.SentMessage(topic.getTopicName(), message);
+			Log.sentMessage(topic.getTopicName(), message);
 
 			message = jmsContext.createTextMessage("Order to be delivered by EU warehouse");
 			message.setStringProperty("Region", "NorthAmerica");
 			jmsProducer.send(topic, message);
-			Log.SentMessage(topic.getTopicName(), message);
-			
-			
+			Log.sentMessage(topic.getTopicName(), message);
 
-			Log.Section("Send delayed message for NA warehouse");
+			Log.section("Send delayed message for NA warehouse");
 			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 			String timestamp = formatter.format(new Date());
 
@@ -72,47 +67,42 @@ public class Producer {
 							timestamp, deliveryDelayInSeconds));
 			message.setStringProperty("Region", "NorthAmerica");
 			jmsProducer.send(topic, message);
-			Log.SentMessage(topic.getTopicName(), message);
-			
-			
+			Log.sentMessage(topic.getTopicName(), message);
 
-			Log.Section("Send message and wait for response");
+			Log.section("Send message and wait for response");
 			Queue temporaryQueue = jmsContext.createTemporaryQueue();
 			message = jmsContext.createTextMessage("Please acknowledge receipt of this message.");
 			message.setStringProperty("Pattern", "RequestResponse");
 			jmsProducer.setDeliveryDelay(deliveryDelayInSeconds * 1000);
 			jmsProducer.setJMSReplyTo(temporaryQueue);
 			jmsProducer.send(topic, message);
-			Log.SentMessage(topic.getTopicName(), message);
+			Log.sentMessage(topic.getTopicName(), message);
 
-			Log.Section("Wait for response message");
+			Log.section("Wait for response message");
 			JMSConsumer responseConsumer = jmsContext.createConsumer(temporaryQueue);
 			Message response = responseConsumer.receive();
-			Log.ReceivedMessage(temporaryQueue.getQueueName(), response);
+			Log.receivedMessage(temporaryQueue.getQueueName(), response);
 			response.acknowledge();
-			
-			
 
-			Log.Section("Send large message to topic");
-			Log.Step("Creating large file");
+			Log.section("Send large message to topic");
+			Log.step("Creating large file");
 			File inputFile = new File("large_file_jms.dat");
 			createFile(inputFile, largeMessageSizeMB * 1024 * 1024);
-			Log.Step("File created");
+			Log.step("File created");
 
 			BytesMessage byteMessage = jmsContext.createBytesMessage();
-			FileInputStream fileInputStream = new FileInputStream(inputFile);
-			BufferedInputStream bufferedInput = new BufferedInputStream(fileInputStream);
-			byteMessage.writeBytes(bufferedInput.readAllBytes());
-			byteMessage.setStringProperty("Pattern", "LargeMessage");
-			bufferedInput.close();
+			try (BufferedInputStream bufferedInput = new BufferedInputStream(new FileInputStream(inputFile))) {
+				byteMessage.writeBytes(bufferedInput.readAllBytes());
+				byteMessage.setStringProperty("Pattern", "LargeMessage");
+			}
 
 			jmsProducer = jmsContext.createProducer();
-			Log.Step("Sending large message");
+			Log.step("Sending large message");
 			jmsProducer.send(topic, byteMessage);
-			Log.SentMessage(topic.getTopicName(), byteMessage);
+			Log.sentMessage(topic.getTopicName(), byteMessage);
 
-		} catch (Exception excep) {
-			excep.printStackTrace();
+		} catch (Exception e) {
+			throw new RuntimeException("Error occurred running producer. " + e);
 		} finally {
 			if (jmsContext != null) {
 				jmsContext.close();
@@ -120,13 +110,21 @@ public class Producer {
 		}
 	}
 
-	private static void createFile(final File file, final long fileSize) throws IOException {
-		FileOutputStream fileOut = new FileOutputStream(file);
-		try (BufferedOutputStream buffOut = new BufferedOutputStream(fileOut)) {
+	/**
+	 * Creates a file with given size.
+	 *
+	 * @param file File to write to.
+	 * @param fileSize Size of file.
+	 * @throws UncheckedIOException if {@code file} could not be found or the output stream could not be closed.
+	 */
+	private static void createFile(final File file, final long fileSize) {
+		try (BufferedOutputStream buffOut = new BufferedOutputStream(new FileOutputStream(file))) {
 			byte[] outBuffer = new byte[1024 * 1024];
 			for (long i = 0; i < fileSize; i += outBuffer.length) {
 				buffOut.write(outBuffer);
 			}
+		} catch (IOException e) {
+			throw new UncheckedIOException(e);
 		}
 	}
 }
