@@ -1,0 +1,4 @@
+spring.jms.servicebus.connection-string=Endpoint=your-service-bus-connectionstring
+spring.jms.servicebus.topic-client-id=UserConsumer
+spring.jms.servicebus.idle-timeout=20000
+spring.jms.servicebus.pricing-tier=premium
