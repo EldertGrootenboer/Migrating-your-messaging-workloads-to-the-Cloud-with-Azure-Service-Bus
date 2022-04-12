@@ -4,7 +4,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 
 public class JmsMessageListener implements javax.jms.MessageListener {
-	private String subscriptionName;
+	private final String subscriptionName;
 	
 	public JmsMessageListener(String subscriptionName)
 	{
@@ -13,7 +13,7 @@ public class JmsMessageListener implements javax.jms.MessageListener {
 	
 	public void onMessage(Message message) {
 		try {
-			Log.ReceivedMessage(subscriptionName, message);
+			Log.receivedMessage(subscriptionName, message);
 			message.acknowledge();
 		} catch (JMSException exception) {
 			exception.printStackTrace();

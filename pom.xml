@@ -1,0 +1,15 @@
+<project>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.servicebus</groupId>
+    <artifactId>migrating-messaging-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <description>Migrating messaging workloads (Parent)</description>
+    <url>https://github.com/EldertGrootenboer/Migrating-your-messaging-workloads-to-the-Cloud-with-Azure-Service-Bus</url>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>assets/code/demo-1</module>
+        <module>assets/code/demo-2</module>
+        <module>assets/code/demo-3</module>
+    </modules>
+</project>
