@@ -41,55 +41,55 @@ public class Producer {
 			Topic topic = jmsContext.createTopic(topicName);
 			jmsProducer = jmsContext.createProducer();
 
-			Log.section("Send general message to topic");
-			message = jmsContext.createTextMessage(String.format("Hello %s!", conference));
-			jmsProducer.send(topic, message);
-			Log.sentMessage(topic.getTopicName(), message);
+//			Log.section("1. Send general message to topic");
+//			message = jmsContext.createTextMessage(String.format("Hello %s!", conference));
+//			jmsProducer.send(topic, message);
+//			Log.sentMessage(topic.getTopicName(), message);
 
-			Log.section("Send messages for warehouses");
-			message = jmsContext.createTextMessage("Order to be delivered by NA warehouse");
-			message.setStringProperty("Region", "NorthAmerica");
-			jmsProducer.send(topic, message);
-			Log.sentMessage(topic.getTopicName(), message);
+//			Log.section("2. Send messages for warehouses");
+//			message = jmsContext.createTextMessage("Order to be delivered by NA warehouse");
+//			message.setStringProperty("Region", "NorthAmerica");
+//			jmsProducer.send(topic, message);
+//			Log.sentMessage(topic.getTopicName(), message);
+////
+//			message = jmsContext.createTextMessage("Order to be delivered by EU warehouse");
+//			message.setStringProperty("Region", "Europe");
+//			jmsProducer.send(topic, message);
+//			Log.sentMessage(topic.getTopicName(), message);
 
-			message = jmsContext.createTextMessage("Order to be delivered by EU warehouse");
-			message.setStringProperty("Region", "NorthAmerica");
-			jmsProducer.send(topic, message);
-			Log.sentMessage(topic.getTopicName(), message);
+//			Log.section("3. Send delayed message for NA warehouse");
+//			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+//			String timestamp = formatter.format(new Date());
+//
+//			jmsProducer.setDeliveryDelay(deliveryDelayInSeconds * 1000);
+//			message = jmsContext.createTextMessage(
+//					String.format("Order to be delivered by NA warehouse, sent at %s, to be handled in %d seconds",
+//							timestamp, deliveryDelayInSeconds));
+//			message.setStringProperty("Region", "NorthAmerica");
+//			jmsProducer.send(topic, message);
+//			Log.sentMessage(topic.getTopicName(), message);
 
-			Log.section("Send delayed message for NA warehouse");
-			SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-			String timestamp = formatter.format(new Date());
+//			Log.section("4. Send message and wait for response");
+//			Queue temporaryQueue = jmsContext.createTemporaryQueue();
+//			message = jmsContext.createTextMessage("Please acknowledge receipt of this message.");
+//			message.setStringProperty("Pattern", "RequestResponse");
+//			jmsProducer.setDeliveryDelay(deliveryDelayInSeconds * 1000);
+//			jmsProducer.setJMSReplyTo(temporaryQueue);
+//			jmsProducer.send(topic, message);
+//			Log.sentMessage(topic.getTopicName(), message);
+//
+//			Log.section("Wait for response message");
+//			JMSConsumer responseConsumer = jmsContext.createConsumer(temporaryQueue);
+//			Message response = responseConsumer.receive();
+//			Log.receivedMessage(temporaryQueue.getQueueName(), response);
+//			response.acknowledge();
 
-			jmsProducer.setDeliveryDelay(deliveryDelayInSeconds * 1000);
-			message = jmsContext.createTextMessage(
-					String.format("Order to be delivered by NA warehouse, sent at %s, to be handled in %d seconds",
-							timestamp, deliveryDelayInSeconds));
-			message.setStringProperty("Region", "NorthAmerica");
-			jmsProducer.send(topic, message);
-			Log.sentMessage(topic.getTopicName(), message);
-
-			Log.section("Send message and wait for response");
-			Queue temporaryQueue = jmsContext.createTemporaryQueue();
-			message = jmsContext.createTextMessage("Please acknowledge receipt of this message.");
-			message.setStringProperty("Pattern", "RequestResponse");
-			jmsProducer.setDeliveryDelay(deliveryDelayInSeconds * 1000);
-			jmsProducer.setJMSReplyTo(temporaryQueue);
-			jmsProducer.send(topic, message);
-			Log.sentMessage(topic.getTopicName(), message);
-
-			Log.section("Wait for response message");
-			JMSConsumer responseConsumer = jmsContext.createConsumer(temporaryQueue);
-			Message response = responseConsumer.receive();
-			Log.receivedMessage(temporaryQueue.getQueueName(), response);
-			response.acknowledge();
-
-			Log.section("Send large message to topic");
+			Log.section("5. Send large message to topic");
 			Log.step("Creating large file");
 			File inputFile = new File("large_file_jms.dat");
 			createFile(inputFile, largeMessageSizeMB * 1024 * 1024);
 			Log.step("File created");
-
+//
 			BytesMessage byteMessage = jmsContext.createBytesMessage();
 			try (BufferedInputStream bufferedInput = new BufferedInputStream(new FileInputStream(inputFile))) {
 				byteMessage.writeBytes(bufferedInput.readAllBytes());

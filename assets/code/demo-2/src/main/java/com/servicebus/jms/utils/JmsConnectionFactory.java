@@ -2,6 +2,7 @@ package com.servicebus.jms.utils;
 
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactory;
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactorySettings;
+import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 
 import javax.jms.ConnectionFactory;
 import java.io.IOException;
@@ -14,7 +15,7 @@ public class JmsConnectionFactory {
 		String connectionString = properties.getProperty("jms.connectionstring");
 
 		// ActiveMQ
-		//		ActiveMQJMSConnectionFactory connectionFactory = new ActiveMQJMSConnectionFactory(connectionString);
+//		return new ActiveMQJMSConnectionFactory(connectionString);
 
 		// Service Bus
 		ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();

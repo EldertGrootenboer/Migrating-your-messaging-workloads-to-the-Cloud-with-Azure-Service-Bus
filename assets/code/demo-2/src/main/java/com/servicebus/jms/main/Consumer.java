@@ -16,7 +16,7 @@ public class Consumer {
 	}
 
 	public void runConsumer() {
-		long minutesToRunConsumers = 1;
+		long minutesToRunConsumers = 5;
 		String topicName = "OrderTopic";
 		String procurementConsumerName = "ProcurementConsumer";
 		String factoryConsumerName = "FactoryConsumer";
@@ -31,35 +31,35 @@ public class Consumer {
 			jmsContext = connectionFactory.createContext();
 			Topic topic = jmsContext.createTopic(topicName);
 
-			Log.section("Receive messages from subscriptions");
-			JMSConsumer jmsProcurementConsumer = jmsContext.createSharedDurableConsumer(topic, procurementConsumerName);
-			jmsProcurementConsumer.setMessageListener(new JmsMessageListener(procurementConsumerName));
-			
-			JMSConsumer jmsFactoryConsumer = jmsContext.createSharedDurableConsumer(topic, factoryConsumerName);
-			jmsFactoryConsumer.setMessageListener(new JmsMessageListener(factoryConsumerName));
+//			Log.section("1. Receive messages from subscriptions");
+//			JMSConsumer jmsProcurementConsumer = jmsContext.createSharedDurableConsumer(topic, procurementConsumerName);
+//			jmsProcurementConsumer.setMessageListener(new JmsMessageListener(procurementConsumerName));
+//
+//			JMSConsumer jmsFactoryConsumer = jmsContext.createSharedDurableConsumer(topic, factoryConsumerName);
+//			jmsFactoryConsumer.setMessageListener(new JmsMessageListener(factoryConsumerName));
 
-			Log.section("Receive messages from filtered subscriptions");
-			JMSConsumer jmsWarehouseNAConsumer = jmsContext.createSharedDurableConsumer(topic, warehouseNAConsumerName, "Region = 'NorthAmerica'");
-			jmsWarehouseNAConsumer.setMessageListener(new JmsMessageListener(warehouseNAConsumerName));
-			
-			JMSConsumer jmsWarehouseEUConsumer = jmsContext.createSharedDurableConsumer(topic, warehouseEUConsumerName, "Region = 'Europe'");
-			jmsWarehouseEUConsumer.setMessageListener(new JmsMessageListener(warehouseEUConsumerName));
+//			Log.section("2 & 3. Receive messages from filtered subscriptions");
+//			JMSConsumer jmsWarehouseNAConsumer = jmsContext.createSharedDurableConsumer(topic, warehouseNAConsumerName, "Region = 'NorthAmerica'");
+//			jmsWarehouseNAConsumer.setMessageListener(new JmsMessageListener(warehouseNAConsumerName));
+//
+//			JMSConsumer jmsWarehouseEUConsumer = jmsContext.createSharedDurableConsumer(topic, warehouseEUConsumerName, "Region = 'Europe'");
+//			jmsWarehouseEUConsumer.setMessageListener(new JmsMessageListener(warehouseEUConsumerName));
 
-			Log.section("Receive messages from subscription and send back response");
-			JMSConsumer jmsInvoicingConsumer = jmsContext.createSharedDurableConsumer(topic, invoicingConsumerName, "Pattern = 'RequestResponse'");
-			jmsInvoicingConsumer.setMessageListener(new JmsMessageListenerWithResponse(invoicingConsumerName, jmsContext));
+//			Log.section("4. Receive messages from subscription and send back response");
+//			JMSConsumer jmsInvoicingConsumer = jmsContext.createSharedDurableConsumer(topic, invoicingConsumerName, "Pattern = 'RequestResponse'");
+//			jmsInvoicingConsumer.setMessageListener(new JmsMessageListenerWithResponse(invoicingConsumerName, jmsContext));
 
-			Log.section("Receive large messages");
+			Log.section("5. Receive large messages");
 			JMSConsumer jmsBulkLoadConsumer = jmsContext.createSharedDurableConsumer(topic, bulkLoadConsumerName, "Pattern = 'LargeMessage'");
 			jmsBulkLoadConsumer.setMessageListener(new JmsMessageListener(bulkLoadConsumerName));
 
 			Thread.sleep(minutesToRunConsumers * 60 * 1000);
 			Log.section("Consumers closing");
-			jmsProcurementConsumer.close();
-			jmsFactoryConsumer.close();
-			jmsWarehouseNAConsumer.close();
-			jmsWarehouseEUConsumer.close();
-			jmsInvoicingConsumer.close();
+//			jmsProcurementConsumer.close();
+//			jmsFactoryConsumer.close();
+//			jmsWarehouseNAConsumer.close();
+//			jmsWarehouseEUConsumer.close();
+//			jmsInvoicingConsumer.close();
 			jmsBulkLoadConsumer.close();
 		} catch (Exception e) {
 			throw new RuntimeException("Consumer could not be run. " + e);

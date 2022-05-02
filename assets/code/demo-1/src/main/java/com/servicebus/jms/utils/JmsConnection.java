@@ -22,14 +22,13 @@ public class JmsConnection {
 		properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("config.properties"));
 		String connectionString = properties.getProperty("jms.connectionstring");
 
-		//		String initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
-
+//		String initialContextFactory = "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
 		String initialContextFactory = "org.apache.qpid.jms.jndi.JmsInitialContextFactory";
 		ServiceBusConnectionStringProperties connectionStringProperties = ServiceBusConnectionStringProperties.parse(connectionString);
 
 		Hashtable<String, String> hashtable = new Hashtable<>();
 
-		//		hashtable.put(Context.PROVIDER_URL, connectionString);
+//		hashtable.put(Context.PROVIDER_URL, connectionString);
 		hashtable.put("connectionfactory.SBCF", "amqps://" + connectionStringProperties.getFullyQualifiedNamespace() + "?amqp.idleTimeout=120000&amqp.traceFrames=true");
 
 		hashtable.put(Context.INITIAL_CONTEXT_FACTORY, initialContextFactory);
@@ -37,12 +36,10 @@ public class JmsConnection {
 		Context context = new InitialContext(hashtable);
 		this.destination = (Destination) context.lookup("QUEUE");
 
-		//		ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
-		//		this.connection = factory.createConnection();
-
+//		ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
+//		this.connection = factory.createConnection();
 		ConnectionFactory factory = (ConnectionFactory) context.lookup("SBCF");
-		this.connection = factory.createConnection(connectionStringProperties.getSharedAccessKeyName(),
-				connectionStringProperties.getSharedAccessKey());
+		this.connection = factory.createConnection(connectionStringProperties.getSharedAccessKeyName(), connectionStringProperties.getSharedAccessKey());
 	}
 
 	public Connection getConnection()
