@@ -1,2 +1,2 @@
 #jms.connectionstring = tcp://localhost:61616
-jms.connectionstring = your-service-bus-connectionstring
+jms.connectionstring = <your-namespace-name>.servicebus.windows.net

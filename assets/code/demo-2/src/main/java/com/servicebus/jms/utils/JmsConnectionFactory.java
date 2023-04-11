@@ -1,5 +1,7 @@
 package com.servicebus.jms.utils;
 
+import com.azure.core.credential.TokenCredential;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactory;
 import com.microsoft.azure.servicebus.jms.ServiceBusJmsConnectionFactorySettings;
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
@@ -18,9 +20,11 @@ public class JmsConnectionFactory {
 //		return new ActiveMQJMSConnectionFactory(connectionString);
 
 		// Service Bus
+		TokenCredential tokenCredential = new DefaultAzureCredentialBuilder()
+				.build();
 		ServiceBusJmsConnectionFactorySettings connFactorySettings = new ServiceBusJmsConnectionFactorySettings();
 		connFactorySettings.setConnectionIdleTimeoutMS(20000);
 
-		return new ServiceBusJmsConnectionFactory(connectionString, connFactorySettings);
+		return new ServiceBusJmsConnectionFactory(tokenCredential, connectionString, connFactorySettings);
 	}
 }

@@ -1,2 +1,2 @@
-curl -X POST "localhost:8080/users?username=JohnDoe"
-curl -X POST "localhost:8080/admins?username=JaneDoe"
+curl POST "localhost:8080/users?username=JohnDoe"
+curl POST "localhost:8080/admins?username=JaneDoe"
